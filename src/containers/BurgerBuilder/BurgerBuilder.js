@@ -27,12 +27,18 @@ class BurgerBuilder extends Component {
     }
 
     componentDidMount() {
-        axios.get('/ingredients.json')
-            .then(response => {
-                this.setState({ ingredients: response.data });                
-            }).catch(error => {
-                this.setState({ error: true });
-            });
+        console.log("ComponentDidMount");
+        const ingredients = localStorage.getItem('ingredients');
+        if (ingredients) {
+            this.setState({ ingredients: JSON.parse(ingredients) });
+        } else {
+            axios.get('/ingredients.json')
+                .then(response => {
+                    this.setState({ ingredients: response.data });                
+                }).catch(error => {
+                    this.setState({ error: true });
+                });
+        }
     }
 
     updatePurchaseState = (ingredients) => {
@@ -92,31 +98,33 @@ class BurgerBuilder extends Component {
     }
 
     purchaseContinueHandler = () => {
-        this.setState({ loading: true });
-        const order = {
-            ingredients: this.state.ingredients,
-            price: this.state.totalPrice,
-            customer: {
-                name: 'Test User',
-                address: {
-                    street: 'Test street 1',
-                    zipCode: '00720',
-                    country: 'Finland'
-                },
-                email: 'test@test.com'
-            },
-            deliveryMethod: 'fastest'
-        };
+        localStorage.setItem('ingredients', JSON.stringify(this.state.ingredients));
+        this.props.history.push('/checkout');        
+        // this.setState({ loading: true });
+        // const order = {
+        //     ingredients: this.state.ingredients,
+        //     price: this.state.totalPrice,
+        //     customer: {
+        //         name: 'Test User',
+        //         address: {
+        //             street: 'Test street 1',
+        //             zipCode: '00720',
+        //             country: 'Finland'
+        //         },
+        //         email: 'test@test.com'
+        //     },
+        //     deliveryMethod: 'fastest'
+        // };
 
-        axios.post('/orders.json', order)
-            .then(response => {
-                console.log(response);
-                this.setState({ loading: false, purchasing: false });
-            })
-            .catch(error => {
-                console.log(error);
-                this.setState({ loading: true, purchasing: false });
-            });
+        // axios.post('/orders.json', order)
+        //     .then(response => {
+        //         console.log(response);
+        //         this.setState({ loading: false, purchasing: false });
+        //     })
+        //     .catch(error => {
+        //         console.log(error);
+        //         this.setState({ loading: true, purchasing: false });
+        //     });
     }
 
     render() {
