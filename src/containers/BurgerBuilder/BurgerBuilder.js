@@ -27,7 +27,8 @@ class BurgerBuilder extends Component {
     }
 
     componentDidMount() {
-        console.log("ComponentDidMount");
+        console.log("[BurgerBuilder] ComponentDidMount");
+        localStorage.clear();
         const ingredients = localStorage.getItem('ingredients');
         if (ingredients) {
             this.setState({ ingredients: JSON.parse(ingredients) });
@@ -99,32 +100,8 @@ class BurgerBuilder extends Component {
 
     purchaseContinueHandler = () => {
         localStorage.setItem('ingredients', JSON.stringify(this.state.ingredients));
+        localStorage.setItem('totalPrice', this.state.totalPrice);
         this.props.history.push('/checkout');        
-        // this.setState({ loading: true });
-        // const order = {
-        //     ingredients: this.state.ingredients,
-        //     price: this.state.totalPrice,
-        //     customer: {
-        //         name: 'Test User',
-        //         address: {
-        //             street: 'Test street 1',
-        //             zipCode: '00720',
-        //             country: 'Finland'
-        //         },
-        //         email: 'test@test.com'
-        //     },
-        //     deliveryMethod: 'fastest'
-        // };
-
-        // axios.post('/orders.json', order)
-        //     .then(response => {
-        //         console.log(response);
-        //         this.setState({ loading: false, purchasing: false });
-        //     })
-        //     .catch(error => {
-        //         console.log(error);
-        //         this.setState({ loading: true, purchasing: false });
-        //     });
     }
 
     render() {

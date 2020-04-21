@@ -6,12 +6,15 @@ import ContactData from '../../components/Order/ContactData/ContactData';
 
 class Checkout extends Component {
     state = {
-        ingredients: []
+        ingredients: [],
+        totalPrice: 0
     }
 
-    componentDidMount() {
+    //componentDidMount() {
+    componentWillMount() {
         const ingredients = localStorage.getItem('ingredients');
-        this.setState({ ingredients: JSON.parse(ingredients) });
+        const totalPrice = +localStorage.getItem('totalPrice');
+        this.setState({ ingredients: JSON.parse(ingredients), totalPrice: totalPrice });
     }
 
     checkoutCancelledHander = () => {
@@ -31,7 +34,10 @@ class Checkout extends Component {
                     checkoutConitnued={this.checkoutConitnuedHandler} />
                 <Route 
                     path={this.props.match.url + '/contact-data'} 
-                    component={ContactData} /> 
+                    render={(props) => (<ContactData 
+                        ingredients={this.state.ingredients}
+                        totalPrice={this.state.totalPrice}
+                        {...props} />)} /> 
             </div>
         );
     }
