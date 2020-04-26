@@ -11,7 +11,7 @@ class ContactData extends Component {
         orderForm: {
             name: this.createCustomElement('input', 'text', 'Your name', ''),
             street: this.createCustomElement('input', 'text', 'Street', ''),
-            zipCode: this.createCustomElement('input', 'text', 'Postal code', ''),
+            zipCode: this.createCustomElement('input', 'text', 'Postal code', '', { required: true, minLength: 6, maxLength: 6 }),
             country: this.createCustomElement('input', 'text', 'Country', 'Finland'),
             email: this.createCustomElement('input', 'email', 'Your e-mail', ''),
             // TODO: move to own helper method
@@ -22,22 +22,38 @@ class ContactData extends Component {
                   { value: 'fastest', displayValue: 'Fastest' },
                   { value: 'cheapest', displayValue: 'Cheapest' },
                 ]
-            },
-            value: ''
+              },
+              validation: {},
+              value: 'fastest',
+              valid: true,
+              touched: true
           }
         },
+        formIsValid: false,
         loading: false
     }
 
-    createCustomElement(elementType, configType, configPlaceHolder, defaultValue) {
-      return {
+    createCustomElement(elementType, configType, configPlaceHolder, defaultValue, validation = null) {
+      const customElement = {
         elementType: elementType,
         elementConfig: {
           type: configType,
           placeholder: configPlaceHolder,
         },
-        value: defaultValue
+        value: defaultValue,
+        valid: defaultValue.length > 0,
+        touched: false,
+        validation: {
+          required: true,
+        }
+      };
+
+      if (validation !== null) {
+        customElement.validation = validation;
+        console.log(customElement);
       }
+
+      return customElement;
     }
 
     orderHandler = (event) => {
@@ -66,6 +82,27 @@ class ContactData extends Component {
             });
     }
 
+    checkValidity(value, rules) {
+      let isValid = true;
+      if (!rules) {
+        return true;
+      }
+      
+      if (rules.required) {
+        isValid = value.trim() !== '' && isValid;
+      }
+
+      if (rules.minLength) {
+        isValid = value.trim().length >= rules.minLength && isValid;
+      }
+
+      if (rules.maxLength) {
+        isValid = value.trim().length <= rules.maxLength && isValid;
+      }
+ 
+      return isValid;
+    }
+
     // inputChangedHandler = (id) => (event) => {
     inputChangedHandler = (event, id) => {
       const updatedOrderForm = { 
@@ -75,8 +112,18 @@ class ContactData extends Component {
         ...updatedOrderForm[id] 
       };
       updatedOrderFormElement.value = event.target.value;
+      updatedOrderFormElement.valid = 
+        this.checkValidity(updatedOrderFormElement.value, updatedOrderFormElement.validation);
+      updatedOrderFormElement.touched = true;
       updatedOrderForm[id] = updatedOrderFormElement;
-      this.setState({ orderForm: updatedOrderForm });
+      console.log(updatedOrderFormElement);
+
+      let formIsValid = true;
+      for (let inputIdentifier in updatedOrderForm) {
+        formIsValid = formIsValid && updatedOrderForm[inputIdentifier].valid;
+      }
+      console.log('formIsValid', formIsValid);
+      this.setState({ orderForm: updatedOrderForm, formIsValid: formIsValid });
     }
 
     render() {
@@ -96,10 +143,13 @@ class ContactData extends Component {
                   elementConfig = {formElement.config.elementConfig} 
                   elementType = {formElement.config.elementType} 
                   value = {formElement.config.value}
+                  invalid={!formElement.config.valid}
+                  shouldValidate={formElement.config.validation}
+                  touched={formElement.config.touched}
                   //changed={this.inputChangedHandler(formElement.id)}></Input>
                   changed={(event) => this.inputChangedHandler(event, formElement.id)}></Input>
               ))}
-              <Button btnType="Success">ORDER HERE</Button>
+              <Button btnType="Success" disabled={!this.state.formIsValid}>ORDER HERE</Button>
             </form>
         );
         if (this.state.loading) {
