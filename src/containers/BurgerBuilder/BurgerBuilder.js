@@ -1,6 +1,8 @@
 import React, { Component } from "react";
 import axios from '../../axios-orders';
 
+import { connect } from 'react-redux';
+
 import Aux from '../../hoc/Auxiliary/Auxiliary';
 import Burger from '../../components/Burger/Burger';
 import BuildControls from '../../components/Burger/BuildControls/BuildControls';
@@ -158,4 +160,4 @@ class BurgerBuilder extends Component {
     }
 }
 
-export default withErrorHandler(BurgerBuilder, axios);
+export default connect()(withErrorHandler(BurgerBuilder, axios));
