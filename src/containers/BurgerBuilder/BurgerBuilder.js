@@ -15,25 +15,19 @@ import * as burgerBuilderActions from '../../store/actions/index';
 
 class BurgerBuilder extends Component {
     state = {
-        purchasing: false,
-        loading: false,
-        error: false
+        purchasing: false
     }
 
     componentDidMount() {
         console.log("[BurgerBuilder] ComponentDidMount");
-        localStorage.clear();
-        const ingredients = localStorage.getItem('ingredients');
-        if (ingredients) {
-            this.setState({ ingredients: JSON.parse(ingredients) });
-        } else {
-            // axios.get('/ingredients.json')
-            //     .then(response => {
-            //         this.setState({ ingredients: response.data });                
-            //     }).catch(error => {
-            //         this.setState({ error: true });
-            //     });
-        }
+        this.props.onIngredientsInit();
+        // localStorage.clear();
+        // const ingredients = localStorage.getItem('ingredients');
+        // if (ingredients) {
+        //     this.setState({ ingredients: JSON.parse(ingredients) });
+        // } else {
+  
+        // }
     }
 
     updatePurchaseState = () => {
@@ -109,7 +103,7 @@ class BurgerBuilder extends Component {
             disabledInfo[key] = disabledInfo[key] <= 0;
         }
 
-        let burger = this.state.error ? 
+        let burger = this.props.error ? 
             <p style={{textAlign: "center"}}>Ingredients cannot be loaded</p> : 
             <Spinner />;
 
@@ -137,9 +131,9 @@ class BurgerBuilder extends Component {
                 </Aux>);
         }
 
-        if (this.state.loading) {
-            orderSummary = <Spinner />;
-        }
+        // if (this.state.loading) {
+        //     orderSummary = <Spinner />;
+        // }
 
         return (
             <Aux>
@@ -157,7 +151,8 @@ class BurgerBuilder extends Component {
 const mapStateToProps = state => {
   return {
     ings: state.ingredients,
-    totPrice: state.totalPrice
+    totPrice: state.totalPrice,
+    error: state.error
   };
 }
 
@@ -165,6 +160,7 @@ const mapDispatchToProps = dispatch => {
   return {
     onIngredientAdded: (ingName) => dispatch(burgerBuilderActions.addIngredient(ingName)),
     onIngredientRemoved: (ingName) => dispatch(burgerBuilderActions.removeIngredient(ingName)),
+    onIngredientsInit: () => dispatch(burgerBuilderActions.initIngredients())
   };
 }
 
