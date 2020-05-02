@@ -145,9 +145,9 @@ class ContactData extends Component {
               <Button btnType="Success" disabled={!this.state.formIsValid}>ORDER HERE</Button>
             </form>
         );
-        // if (this.state.loading) {
-        //     form = <Spinner />
-        // }
+        if (this.props.loading) {
+            form = <Spinner />
+        }
         return (
             <div className={classes.ContactData}>
                 <h4>Enter your contact data</h4>
@@ -159,14 +159,15 @@ class ContactData extends Component {
 
 const mapStateToProps = state => {
   return {
-    ings: state.ingredients,
-    price: state.totalPrice
+    ings: state.burgerBuilder.ingredients,
+    price: state.burgerBuilder.totalPrice,
+    loading: state.order.loading
   };
 }
 
 const mapDispatchToProps = dispatch => {
   return { 
-    onOrderBurger: (order) => dispatch(orderActions.purchaseBurgerStart(order))
+    onOrderBurger: (order) => dispatch(orderActions.purchaseBurger(order))
   };
 }
 

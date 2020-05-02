@@ -15,7 +15,7 @@ const INGREDIENT_PRICES = {
 
 const reducer = (state = initState, action) => {
   switch (action.type) {
-    case actionTypes.ADD_INGREDIENT: {
+    case actionTypes.ADD_INGREDIENT:
       return {
         ...state,
         ingredients: {
@@ -24,8 +24,7 @@ const reducer = (state = initState, action) => {
         },
         totalPrice: state.totalPrice + INGREDIENT_PRICES[action.ingredientName]
       }
-    }
-    case actionTypes.REMOVE_INGREDIENT: {
+    case actionTypes.REMOVE_INGREDIENT:
       const oldCount = state.ingredients[action.ingredientName];
       const newCount = oldCount >= 1 ? oldCount - 1 : 0;
       return {
@@ -36,8 +35,7 @@ const reducer = (state = initState, action) => {
         },
         totalPrice: state.totalPrice - INGREDIENT_PRICES[action.ingredientName]
       }
-    }
-    case actionTypes.SET_INGREDIENTS: {
+    case actionTypes.SET_INGREDIENTS:
       return {
         ...state,
         // just to map ingredients in fixed order (salad on top, meat on the bottom)
@@ -47,20 +45,17 @@ const reducer = (state = initState, action) => {
           cheese: action.ingredients.cheese,
           meat: action.ingredients.meat
         },
+        totalPrice: 4.0,
         error: false
       };
-    }
-    case actionTypes.INGREDIENTS_LOADING_FAILED: {
+    case actionTypes.INGREDIENTS_LOADING_FAILED: 
       return {
         ...state,
         error: true
       };
-    }
     default:
-      console.log('Unknown action type');
+      return state;
   }
-  
-  return state;
 }
 
 export default reducer;

@@ -91,6 +91,7 @@ class BurgerBuilder extends Component {
     purchaseContinueHandler = () => {
         // localStorage.setItem('ingredients', JSON.stringify(this.props.ings));
         // localStorage.setItem('totalPrice', this.props.totPrice);
+        this.props.onInitPurchase();
         this.props.history.push('/checkout');        
     }
 
@@ -150,9 +151,9 @@ class BurgerBuilder extends Component {
 
 const mapStateToProps = state => {
   return {
-    ings: state.ingredients,
-    totPrice: state.totalPrice,
-    error: state.error
+    ings: state.burgerBuilder.ingredients,
+    totPrice: state.burgerBuilder.totalPrice,
+    error: state.burgerBuilder.error
   };
 }
 
@@ -160,7 +161,8 @@ const mapDispatchToProps = dispatch => {
   return {
     onIngredientAdded: (ingName) => dispatch(burgerBuilderActions.addIngredient(ingName)),
     onIngredientRemoved: (ingName) => dispatch(burgerBuilderActions.removeIngredient(ingName)),
-    onIngredientsInit: () => dispatch(burgerBuilderActions.initIngredients())
+    onIngredientsInit: () => dispatch(burgerBuilderActions.initIngredients()),
+    onInitPurchase: () => dispatch(burgerBuilderActions.purchaseInit())
   };
 }
 
